@@ -27,20 +27,22 @@ namespace MongoDBChisoftApp
 
             //db.InsertRecord("Users", person);
 
-            var recs = db.LoadRecord<PersonModel>("Users");
+            //var recs = db.LoadRecord<PersonModel>("Users");
 
-            foreach (var rec in recs)
-            {
-                Console.WriteLine($"{rec.Id}: {rec.FirstName} {rec.LastName}");
+            //foreach (var rec in recs)
+            //{
+            //    Console.WriteLine($"{rec.Id}: {rec.FirstName} {rec.LastName}");
 
-                if(rec.PrimaryAddress != null)
-                {
-                    Console.WriteLine(rec.PrimaryAddress.City);
-                }
+            //    if(rec.PrimaryAddress != null)
+            //    {
+            //        Console.WriteLine(rec.PrimaryAddress.City);
+            //    }
 
-                Console.WriteLine();
-            }
-          
+            //    Console.WriteLine();
+            //}
+
+            var oneRec = db.LoadRecordById<PersonModel>("Users", new Guid("d2171409-da08-4f7f-9fb2-7e3ab8d79aa7"));
+
             Console.ReadLine();
         }
     }
