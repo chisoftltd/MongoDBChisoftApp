@@ -1,6 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 
 namespace MongoDBChisoftApp
 {
@@ -10,20 +12,35 @@ namespace MongoDBChisoftApp
         {
             MongoCRUD db = new MongoCRUD("AddressBook");
 
-            PersonModel person = new PersonModel
-            {
-                FirstName = "Mikael",
-                LastName = "Chinwe",
-                PrimaryAddress = new AddressModel
-                {
-                    StreetAddress = " 8 Church Street",
-                    City = "Baillieston",
-                    State = "Glasgow",
-                    PostCode = "G69 7NU"
-                }
-            };
+            //PersonModel person = new PersonModel
+            //{
+            //    FirstName = "Mikael",
+            //    LastName = "Chinwe",
+            //    PrimaryAddress = new AddressModel
+            //    {
+            //        StreetAddress = " 8 Church Street",
+            //        City = "Baillieston",
+            //        State = "Glasgow",
+            //        PostCode = "G69 7NU"
+            //    }
+            //};
 
-            db.InsertRecord("Users", person);
+            //db.InsertRecord("Users", person);
+
+            var recs = db.LoadRecord<PersonModel>("Users");
+
+            foreach (var rec in recs)
+            {
+                Console.WriteLine($"{rec.Id}: {rec.FirstName} {rec.LastName}");
+
+                if(rec.PrimaryAddress != null)
+                {
+                    Console.WriteLine(rec.PrimaryAddress.City);
+                }
+
+                Console.WriteLine();
+            }
+          
             Console.ReadLine();
         }
     }
@@ -59,6 +76,21 @@ namespace MongoDBChisoftApp
         {
             var collection = db.GetCollection<T>(table);
             collection.InsertOne(record);
+        }
+
+        public List<T> LoadRecord<T>(string table)
+        {
+            var collection = db.GetCollection<T>(table);
+
+            return collection.Find(new BsonDocument()).ToList();
+        }
+
+        public T LoadRecordById<T>(string table, Guid id)
+        {
+            var collection = db.GetCollection<T>(table);
+            var filter = Builders<T>.Filter.Eq("Id", id);
+
+            return collection.Find(filter).First();
         }
     }
 }
