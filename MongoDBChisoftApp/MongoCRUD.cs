@@ -35,6 +35,7 @@ namespace MongoDBChisoftApp
             return collection.Find(filter).First();
         }
 
+        [Obsolete]
         public void UpsertRecord<T>(string table, Guid id, T record)
         {
             var collection = db.GetCollection<T>(table);
